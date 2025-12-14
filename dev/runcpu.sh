@@ -47,7 +47,6 @@ python -m scripts.tok_eval
 # train a very small 4 layer model on the CPU
 # each optimization step processes a single sequence of 1024 tokens
 # we only run 50 steps of optimization (bump this to get better results)
-export NANOCHAT_BASE_TRAIN_SAVE_EVERY=1
 python -m scripts.base_train \
     --depth=4 \
     --max_seq_len=1024 \
