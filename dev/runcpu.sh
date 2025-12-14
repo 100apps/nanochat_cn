@@ -10,12 +10,16 @@
 
 # all the setup stuff
 export OMP_NUM_THREADS=1
+export HF_ENDPOINT=https://hf-mirror.com
+export UV_DEFAULT_INDEX="https://pypi.tuna.tsinghua.edu.cn/simple"
+export RUSTUP_DIST_SERVER="https://rsproxy.cn"
+export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
+
 CACHE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 export NANOCHAT_BASE_DIR="$CACHE_DIR/.cache/nanochat"
 mkdir -p $NANOCHAT_BASE_DIR
 
-export UV_DEFAULT_INDEX="https://pypi.tuna.tsinghua.edu.cn/simple"
-command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
+command -v uv &> /dev/null || curl -LsSf https://gitee.com/jumploop/uv-custom/releases/download/0.9.17/uv-installer-custom.sh | sh
 [ -d ".venv" ] || uv venv
 uv sync --extra cpu
 source .venv/bin/activate
@@ -24,8 +28,6 @@ if [ -z "$WANDB_RUN" ]; then
 fi
 
 # install rust via a China mirror to speed things up for users in China
-export RUSTUP_DIST_SERVER="https://rsproxy.cn"
-export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
 curl --proto '=https' --tlsv1.2 -sSf https://rsproxy.cn/rustup-init.sh | sh -s -- -y
 source "$HOME/.cargo/env"
 uv run maturin develop --release --manifest-path rustbpe/Cargo.toml
@@ -41,6 +43,7 @@ python -m scripts.tok_eval
 # train a very small 4 layer model on the CPU
 # each optimization step processes a single sequence of 1024 tokens
 # we only run 50 steps of optimization (bump this to get better results)
+export NANOCHAT_BASE_TRAIN_SAVE_EVERY=1
 python -m scripts.base_train \
     --depth=4 \
     --max_seq_len=1024 \
@@ -76,7 +79,7 @@ python -m scripts.chat_sft \
     --eval_metrics_max_problems=16
 
 # Chat CLI
-# python -m scripts.chat_cli -p "Why is the sky blue?"
+python -m scripts.chat_cli -p "Why is the sky blue?"
 
 # Chat Web
 # python -m scripts.chat_web
