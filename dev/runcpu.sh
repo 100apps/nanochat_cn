@@ -10,8 +10,11 @@
 
 # all the setup stuff
 export OMP_NUM_THREADS=1
-export NANOCHAT_BASE_DIR="$HOME/.cache/nanochat"
+CACHE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+export NANOCHAT_BASE_DIR="$CACHE_DIR/.cache/nanochat"
 mkdir -p $NANOCHAT_BASE_DIR
+
+export UV_DEFAULT_INDEX="https://pypi.tuna.tsinghua.edu.cn/simple"
 command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 [ -d ".venv" ] || uv venv
 uv sync --extra cpu
@@ -19,7 +22,11 @@ source .venv/bin/activate
 if [ -z "$WANDB_RUN" ]; then
     WANDB_RUN=dummy
 fi
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# install rust via a China mirror to speed things up for users in China
+export RUSTUP_DIST_SERVER="https://rsproxy.cn"
+export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
+curl --proto '=https' --tlsv1.2 -sSf https://rsproxy.cn/rustup-init.sh | sh -s -- -y
 source "$HOME/.cargo/env"
 uv run maturin develop --release --manifest-path rustbpe/Cargo.toml
 
