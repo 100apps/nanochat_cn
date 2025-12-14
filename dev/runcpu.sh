@@ -12,6 +12,7 @@
 export OMP_NUM_THREADS=1
 export HF_ENDPOINT=https://hf-mirror.com
 export UV_DEFAULT_INDEX="https://pypi.tuna.tsinghua.edu.cn/simple"
+#export UV_DEFAULT_INDEX="https://mirrors.aliyun.com/pypi/simple"
 export RUSTUP_DIST_SERVER="https://rsproxy.cn"
 export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
 
