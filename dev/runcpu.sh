@@ -20,6 +20,9 @@ export NANOCHAT_BASE_DIR="$CACHE_DIR/.cache/nanochat"
 mkdir -p $NANOCHAT_BASE_DIR
 
 command -v uv &> /dev/null || curl -LsSf https://gitee.com/jumploop/uv-custom/releases/download/0.9.17/uv-installer-custom.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+# 清华源如果403了，可以尝试阿里云： ~/.config/uv/uv.toml
+# https://mirrors.aliyun.com/pypi/simple
 [ -d ".venv" ] || uv venv
 uv sync --extra cpu
 source .venv/bin/activate
